@@ -1,4 +1,4 @@
-*This repo is a internship interview task. If you are a stalker and want to know about my projects, please visit my other repos.*
+*This repo is an internship interview task. If you are a stalker and want to know about my projects, please visit my other repos.*
 
 As per the docs, the project has been completed giving more priority to **accurate design**. I've implemented the **bonus features** and have added some **extra animations** and **effects**. This project has **zero dependencies**.
 
