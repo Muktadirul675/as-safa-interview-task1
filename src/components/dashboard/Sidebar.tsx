@@ -21,7 +21,7 @@ interface SidebarRoutes {
     [key: string]: SidebarRoute[]
 }
 
-const routes : SidebarRoutes = {
+const routes: SidebarRoutes = {
     menu: [
         { label: "Dashboard", link: "/dashboard", icon: <RiDashboardFill size={25} /> },
         { label: "Task", link: "/task", icon: <FaTasks size={25} /> },
@@ -47,9 +47,9 @@ export default function DashboardSidebar() {
     const [loggingOut, setLoggingOut] = useState<boolean>(false);
     async function triggerLogout() {
         setLoggingOut(true);
-        try{
+        try {
             await auth.logout()
-        }catch(e) {alert(e)}
+        } catch (e) { alert(e) }
         finally {
             setLoggingOut(false)
         }
@@ -57,23 +57,25 @@ export default function DashboardSidebar() {
 
     return <div className="w-fit md:min-w-[250px] rounded-lg md:rounded-2xl bg-slate-100 h-[calc(100vh-1rem)] md:h-[calc(100vh-2rem)] sticky top-0 z-10 flex flex-col">
         <div className="mt-6 px-4 flex items-center gap-2">
-            <img src="/logo.jpeg" alt="" className="w-8 h-8 rounded-full" />
+            <NavLink to={'/dashboard'}>
+                <img src="/logo.jpeg" alt="" className="w-8 h-8 rounded-full" />
+            </NavLink>
             <h3 className="text-3xl sm-hidden">Donezo</h3>
         </div>
         {Object.keys(routes).map((group, index) =>
             <div className="mt-6" key={index}>
                 <div className="sm-hidden my-2 px-4 text-theme-subtle uppercase text-sm">{group}</div>
-                {routes[group].map((route, index) => <DashboardSidebarItem route={route} key={index}/>)}
+                {routes[group].map((route, index) => <DashboardSidebarItem route={route} key={index} />)}
             </div>
         )}
         <button disabled={loggingOut} onClick={triggerLogout} className="sidebar-route-item px-4 text-theme-subtle text-lg flex items-center gap-3 py-2 transition-all hover:text-theme-hover disabled:bg-theme-subtle">
-            {loggingOut ? <Spinner/> : <><BiLogOut size={25} />
-            <div className="sm-hidden text-black">Logout</div></>}
+            {loggingOut ? <Spinner /> : <><BiLogOut size={25} />
+                <div className="sm-hidden text-black">Logout</div></>}
         </button>
         <div className="mt-auto px-4 text-white sm-hidden">
             <div className="rounded-lg md:rounded-2xl p-5 bg-[url('/gc1.jpg')] bg-cover bg-center bg-no-repeat">
                 <div className="bg-white h-8 w-8 p-2 rounded-full text-black">
-                    <SlBadge/>
+                    <SlBadge />
                 </div>
                 <div className="text-xl">
                     <b>Download</b> our mobile app.
