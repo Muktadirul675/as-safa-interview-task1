@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-theme-primary: #29885e;
+  --color-theme-secondary: #699b84;
+  --color-theme-hover: #91c8af;
+  --color-theme-subtle: #6b6b6b;
+  --color-theme-alpha-gray: #f7f7f7;
+}
+
+button {
+  cursor: pointer;
+}
+
+@layer utilities {
+  .bg-theme-gradient {
+    background: linear-gradient(120deg,
+        #176340 0%,
+        #0f5f3a 50%,
+        #11a060 100%);
+  }
+
+  .sm-hidden {
+    @apply hidden md:inline-block;
+  }
+
+  .md-hidden {
+    @apply inline-block md:hidden;
+  }
+
+  .btn-theme-hover {
+    @apply transition-all hover:bg-theme-hover;
+  }
+}
+
+.sidebar-route-item{
+  position: relative;
+}
+
+.sidebar-route-item.active {
+  color: #29885e;
+}
+
+.sidebar-route-item.active::before {
+  content: '';
+  height: 100%;
+  width: 6px;
+  background-color: var(--color-theme-primary);
+  position: absolute;
+  inset: 0;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  display: hidden;
+}
+
+@media (min-width: 768px) {
+  .sidebar-route-item.active::before {
+    display: block;
+  }
+}
