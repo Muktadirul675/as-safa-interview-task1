@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { FiMail, FiLock } from "react-icons/fi";
-import { useLocation, useNavigate } from "react-router";
-import { useAuth } from "../stores/auth";
+import { FiLock, FiMail } from "react-icons/fi";
+import { useNavigate } from "react-router";
 import Spinner from "../components/ui/Spinner";
+import { useAuth } from "../stores/auth";
 
 export default function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as any)?.from?.pathname || "/dashboard";
+  const from = "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
