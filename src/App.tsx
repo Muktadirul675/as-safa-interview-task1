@@ -10,17 +10,19 @@ import { AuthProvider } from './stores/auth';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
-
   return (
     <AuthProvider>
-      <Toaster/>
+      <Toaster />
       <AuthSync />
       <Routes>
         <Route path='/login' element={<LoginPage />} />
-        <Route path='/' element={<ProtectedRoute><RootLayout /></ProtectedRoute>}>
-          <Route path='/dashboard' element={<DashboardPage />} />
-          <Route path='/*' element={<NotFoundPage />} />
+        <Route path='/dashboard' element={
+          <ProtectedRoute>
+            <RootLayout />
+          </ProtectedRoute>}>
+          <Route index element={<DashboardPage />} />
         </Route>
+        <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </AuthProvider>
   )
