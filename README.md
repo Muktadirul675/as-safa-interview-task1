@@ -11,7 +11,7 @@ Check the live version here:
 
 ## Stack
 - Vite
-- Typescrip
+- Typescript
 - React 19 (without compiler)
 - Tailwind CSS
 
