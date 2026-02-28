@@ -46,7 +46,7 @@ npm install
 npm run dev
 ```
 
-**3. Run production server**
+**4. Run production server**
 ```bash
 npm run build
 npm run preview
