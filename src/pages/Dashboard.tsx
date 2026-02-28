@@ -1,14 +1,23 @@
 import { BiDownload, BiPlus } from "react-icons/bi";
-import ProjectCardGroup from "../components/dashboard/ProjectCardGroup";
-import ProjectList from "../components/dashboard/ProjectList";
-import ProjectAnalytics from "../components/dashboard/ProjectAnalytics";
 import ReminderBlock from "../components/dashboard/Reminder";
 import TeamCollaboration from "../components/dashboard/Collaboration";
-import ProjectProgress from "../components/dashboard/ProjectProgress";
 import ThemeButton from "../components/ui/ThemeButton";
 import TimeTracker from "../components/dashboard/TimeTracker";
+import ProductProgress from "../components/dashboard/ProductProgress";
+import ProductList from "../components/dashboard/ProductList";
+import ProductAnalytics from "../components/dashboard/ProductAnalytics";
+import { useDashboard } from "../stores/dashboard";
+import Overview from "../components/dashboard/Overview";
+import { useEffect } from "react";
+import { BarsSkeleton, CardsGroupSkeleton, ListSkeleton, SemiCircleProgressSkeleton } from "../components/ui/Skeletons";
 
 export default function DashboardPage() {
+    const {products, overview, analytics, users, fetchDashboard, loading} = useDashboard();
+
+    useEffect(()=>{
+        fetchDashboard()
+    },[])
+
     return (
         <div className="w-full flex flex-col gap-2 md:gap-4">
             <div className="flex items-center gap-1 md:gap-3">
@@ -18,18 +27,18 @@ export default function DashboardPage() {
                 </div>
                 <div className="ms-auto"></div>
                 <ThemeButton filled={true}>
-                    <BiPlus size={20} /> <span className="sm-hidden">Add Project</span>
+                    <BiPlus size={20} /> <span className="sm-hidden">Add Product</span>
                 </ThemeButton>
                 <ThemeButton>
-                    <BiDownload className="md-hidden" size={20} /> <span className="sm-hidden">Import Project</span>
+                    <BiDownload className="md-hidden" size={20} /> <span className="sm-hidden">Import Product</span>
                 </ThemeButton>
             </div>
-            <ProjectCardGroup />
+            {(overview === null) ? <CardsGroupSkeleton/> : <Overview overview={overview} />}
             <div className="w-full flex flex-col md:flex-row gap-2 md:gap-4">
                 <div className="w-full md:w-3/4 flex flex-col gap-2 md:gap-4">
                     <div className="w-full flex flex-col md:flex-row gap-2 md:gap-4">
                         <div className="w-full md:w-2/3">
-                            <ProjectAnalytics />
+                            {(analytics.length === 0 && loading) ? <BarsSkeleton/> : <ProductAnalytics analytics={analytics}/>}
                         </div>
                         <div className="w-full md:w-1/3">
                             <ReminderBlock />
@@ -37,15 +46,15 @@ export default function DashboardPage() {
                     </div>
                     <div className="w-full flex flex-col md:flex-row gap-2 md:gap-4">
                         <div className="w-full md:w-3/5">
-                            <TeamCollaboration/>
+                            {(users.length === 0 && loading) ? <ListSkeleton/> : <TeamCollaboration users={users}/>}
                         </div>
                         <div className="w-full md:w-2/5">
-                            <ProjectProgress/>
+                            {(analytics.length === 0 && loading) ? <SemiCircleProgressSkeleton/> : <ProductProgress analytics={analytics}/>}
                         </div>
                     </div>
                 </div>
                 <div className="w-full md:w-1/4 flex flex-col gap-2 md:gap-4">
-                    <ProjectList />
+                    {(products.length === 0 && loading) ? <ListSkeleton/> : <ProductList products={products}/>}
                     <TimeTracker/>
                 </div>
             </div>

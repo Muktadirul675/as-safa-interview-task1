@@ -1,10 +1,12 @@
-const completed = 78;
-const inProgress = 52;
+import { useIncrementalNumber } from "../../hooks/useIncrementalNumber";
+
+interface ProductProgressProps {
+  analytics: Analytics[];
+}
 
 const radius = 140;
 const stroke = 48;
 const normalizedRadius = radius - stroke / 2;
-
 const startAngle = Math.PI * 0.9;
 const endAngle = Math.PI * 0.1;
 const totalAngle = startAngle - endAngle;
@@ -23,18 +25,26 @@ const arcPath = `
   A ${normalizedRadius} ${normalizedRadius} 0 0 1 ${end.x} ${end.y}
 `;
 
-const getOffset = (value: number) =>
-  circumference - (value / 100) * circumference;
+const getOffset = (value: number) => circumference - (value / 100) * circumference;
 
-export default function ProjectProgress() {
-  const completedOffset = getOffset(completed);
-  const progressOffset = getOffset(inProgress);
+export default function ProductProgress({ analytics }: ProductProgressProps) {
+  const totalConversions = analytics.reduce((acc, a) => acc + a.conversions, 0);
+  const totalClicks = analytics.reduce((acc, a) => acc + a.clicks, 0);
+  const totalViews = analytics.reduce((acc, a) => acc + a.views, 0);
+
+  const completed = useIncrementalNumber(Math.round(totalConversions));
+  const inProgress = useIncrementalNumber(Math.round(totalClicks));
+  const pending = useIncrementalNumber(Math.round(totalViews));
+
+  const completedOffset = getOffset((completed / pending) * 100 || 0);
+  const progressOffset = getOffset((inProgress / pending) * 100 || 0);
+
   const completedIsBigger = completed > inProgress;
 
   return (
     <div className="rounded-2xl bg-white p-5 md:p-10 max-w-full overflow-hidden">
       <h3 className="text-2xl md:text-3xl font-semibold text-center md:text-left">
-        Project Progress
+        Product Progress
       </h3>
 
       <div className="flex justify-center mt-8 md:mt-14 relative">
@@ -110,10 +120,10 @@ export default function ProjectProgress() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-2 top-10">
           <div className="text-4xl md:text-4xl font-bold text-black truncate">
-            {completed}%
+            {Math.round((completed / pending) * 100) || 0}%
           </div>
           <div className="text-xs md:text-sm text-gray-500 mt-1 text-center truncate">
-            Project Ended
+            Conversions
           </div>
         </div>
       </div>
@@ -121,15 +131,15 @@ export default function ProjectProgress() {
       <div className="flex justify-around mt-4 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <div className="h-4 w-4 rounded-full bg-theme-primary"></div>
-          <div className="text-sm truncate">Completed</div>
+          <div className="text-sm truncate">Conversions</div>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-4 w-4 rounded-full bg-theme-secondary"></div>
-          <div className="text-sm truncate">In Progress</div>
+          <div className="text-sm truncate">Clicks</div>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-4 w-4 rounded-full bg-[repeating-linear-gradient(45deg,#000,#fff_4px)]"></div>
-          <div className="text-sm truncate">Pending</div>
+          <div className="text-sm truncate">Views</div>
         </div>
       </div>
     </div>

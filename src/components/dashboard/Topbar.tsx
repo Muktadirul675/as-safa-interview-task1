@@ -24,10 +24,9 @@ function UserInfo() {
       <div className="rounded-full bg-pink-200 p-2">
         <img src="/man.png" className="w-5 md:w-10 h-5 md:h-10" alt="" />
       </div>
-      <div className="sm-hidden">
-        <span className="text-xs md:text-md font-medium">Totok Michael</span>
-        <br />
-        <span className="text-xs md:text-md text-theme-subtle">{auth.user.email}</span>
+      <div className="sm-hidden flex flex-col gap-1">
+        <div className="text-xs md:text-md font-medium">{auth.user.name}</div>
+        <div className="text-xs md:text-md text-theme-subtle">{auth.user.email}</div>
       </div>
     </div>
   }

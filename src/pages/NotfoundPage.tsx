@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router";
 export default function NotFoundPage() {
     const { pathname } = useLocation()
     return (
-        <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+        <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 px-4 text-center h-screen">
             <div className="mb-5 w-full max-w-md">
                 <img src="/404.png" alt="404 Illustration" className="w-full h-auto rounded-3xl" />
             </div>

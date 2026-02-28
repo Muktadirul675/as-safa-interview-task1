@@ -6,17 +6,20 @@ export function useIncrementalNumber(target: number, duration = 1000) {
   useEffect(() => {
     if (target <= 0) return;
 
-    const stepTime = duration / target;
+    const intervalTime = 16;
+    const steps = Math.ceil(duration / intervalTime);
+    const increment = target / steps;
 
+    let current = 0;
     const timer = setInterval(() => {
-      setValue((prev) => {
-        if (prev >= target) {
-          clearInterval(timer);
-          return target;
-        }
-        return prev + 1;
-      });
-    }, stepTime);
+      current += increment;
+      if (current >= target) {
+        setValue(target);
+        clearInterval(timer);
+      } else {
+        setValue(Math.floor(current));
+      }
+    }, intervalTime);
 
     return () => clearInterval(timer);
   }, [target, duration]);

@@ -1,8 +1,9 @@
-import { createContext, useState, useContext, type ReactNode } from "react";
+import { createContext, useState, useContext, useEffect, type ReactNode } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
-interface User {
+interface LoginResponse {
   id: number;
   email: string;
   token: string;
@@ -11,57 +12,67 @@ interface User {
 interface AuthContextType {
   token: string | null;
   user: User | null;
-  setToken: (token: string | null) => void;
-  logout: () => void;
   login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setTokenState] = useState<string | null>(
+  const [token, setToken] = useState<string | null>(
     localStorage.getItem("access_token")
   );
+
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem("user_data");
     return stored ? JSON.parse(stored) : null;
   });
 
-  const setToken = (newToken: string | null) => {
-    setTokenState(newToken);
-    if (newToken) localStorage.setItem("access_token", newToken);
-    else localStorage.removeItem("access_token");
-  };
+  const navigate = useNavigate()
 
-  const setUserData = (userData: User | null) => {
-    setUser(userData);
-    if (userData) localStorage.setItem("user_data", JSON.stringify(userData));
-    else localStorage.removeItem("user_data");
-  };
+  useEffect(() => {
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      localStorage.setItem("access_token", token);
+    } else {
+      delete api.defaults.headers.common["Authorization"];
+      localStorage.removeItem("access_token");
+    }
+  }, [token]);
 
-  const logout = () => {
-    setToken(null);
-    setUserData(null);
-    toast('Logged out')
+  const fetchUser = async (id: number) => {
+    const res = await api.get<User>(`/users/${id}`);
+    setUser(res.data);
+    localStorage.setItem("user_data", JSON.stringify(res.data));
   };
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await api.post<User>("/login", { email, password });
-      setToken(res.data.token);
-      setUserData(res.data);
-      toast.success('Successfully Logged in!')
+      const res = await api.post<LoginResponse>("/login", { email, password });
+      const { id, token } = res.data;
+      setToken(token);
+      await fetchUser(id);
+      toast.success("Successfully Logged in!");
     } catch (error: any) {
       if (error.response) {
-        toast.error('Login Failed')
+        toast.error(`Login Failed`);
+        console.log(error.response)
       } else {
-        toast.error('Network Error')
+        toast.error("Network Error");
       }
     }
   };
 
+  const logout = () => {
+    navigate('/login')
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("user_data");
+    toast("Logged out");
+  };
+
   return (
-    <AuthContext.Provider value={{ token, user, setToken, logout, login }}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
